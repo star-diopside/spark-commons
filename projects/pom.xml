@@ -16,6 +16,7 @@
 
     <modules>
         <module>spark-commons-core</module>
+        <module>spark-commons-test-support</module>
     </modules>
 
     <properties>
