@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:task="http://www.springframework.org/schema/task"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+
+    <bean id="sessionStoreFilter" class="jp.gr.java_conf.star_diopside.spark.commons.web.session.servlet.SessionStoreFilter">
+        <property name="sessionStoreService" ref="sessionStoreService" />
+    </bean>
+
+    <bean class="jp.gr.java_conf.star_diopside.spark.commons.web.session.event.StoredHttpSessionDestroyedEventListener">
+        <property name="sessionStoreService" ref="sessionStoreService" />
+    </bean>
+
+    <task:scheduler id="sessionStoreTaskScheduler" />
+
+    <task:scheduled-tasks scheduler="sessionStoreTaskScheduler">
+        <task:scheduled ref="sessionStoreService" method="removeInvalidSession"
+            initial-delay="300000" fixed-delay="3600000" />
+    </task:scheduled-tasks>
+
+</beans>
