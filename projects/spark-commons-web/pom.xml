@@ -10,8 +10,8 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>spark-commons-batch-support</artifactId>
-    <name>spark-commons-batch-support</name>
+    <artifactId>spark-commons-web</artifactId>
+    <name>spark-commons-web</name>
 
     <properties>
         <project.rootdir>${project.basedir}/../..</project.rootdir>
@@ -19,16 +19,13 @@
 
     <dependencies>
         <dependency>
-            <groupId>jp.gr.java_conf.star_diopside.spark.commons</groupId>
-            <artifactId>spark-commons-core</artifactId>
+            <groupId>javax</groupId>
+            <artifactId>javaee-web-api</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework.batch</groupId>
-            <artifactId>spring-batch-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
         </dependency>
     </dependencies>
 

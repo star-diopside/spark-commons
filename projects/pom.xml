@@ -16,9 +16,10 @@
 
     <modules>
         <module>spark-commons-core</module>
-        <module>spark-commons-batch-support</module>
+        <module>spark-commons-batch</module>
+        <module>spark-commons-web</module>
         <module>spark-commons-session-store</module>
-        <module>spark-commons-test-support</module>
+        <module>spark-commons-test</module>
     </modules>
 
     <properties>
