@@ -31,19 +31,21 @@ public class SessionStoreFilter extends OncePerRequestFilter {
         long beforeModifiedTime = 0;
 
         try {
-            HttpSession session = req.getSession();
-            synchronized (session) {
-                sessionStoreService.readSession(req);
-                beforeModifiedTime = ((StoredHttpSession) session).getModifiedTime();
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+                synchronized (session) {
+                    sessionStoreService.readSession(req);
+                    beforeModifiedTime = req.getSession().getModifiedTime();
+                }
             }
 
             filterChain.doFilter(req, response);
 
         } finally {
-            HttpSession session = req.getSession(false);
+            HttpSession session = request.getSession(false);
             if (session != null) {
                 synchronized (session) {
-                    long afterModifiedTime = ((StoredHttpSession) session).getModifiedTime();
+                    long afterModifiedTime = req.getSession().getModifiedTime();
                     if (beforeModifiedTime != afterModifiedTime) {
                         sessionStoreService.storeSession(req);
                     }

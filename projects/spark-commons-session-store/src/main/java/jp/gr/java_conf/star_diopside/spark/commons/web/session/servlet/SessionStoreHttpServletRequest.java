@@ -19,13 +19,13 @@ public class SessionStoreHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     @Override
-    public HttpSession getSession(boolean create) {
+    public StoredHttpSession getSession(boolean create) {
         HttpSession session = super.getSession(create);
         return session == null ? null : getSessionInternal(session);
     }
 
     @Override
-    public HttpSession getSession() {
+    public StoredHttpSession getSession() {
         HttpSession session = super.getSession();
         return getSessionInternal(session);
     }
