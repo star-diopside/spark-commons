@@ -28,14 +28,12 @@ public class SessionStoreFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         SessionStoreHttpServletRequest req = new SessionStoreHttpServletRequest(request);
-        long beforeModifiedTime = 0;
 
         try {
             HttpSession session = request.getSession(false);
             if (session != null) {
                 synchronized (session) {
                     sessionStoreService.readSession(req);
-                    beforeModifiedTime = req.getSession().getModifiedTime();
                 }
             }
 
@@ -45,8 +43,7 @@ public class SessionStoreFilter extends OncePerRequestFilter {
             HttpSession session = request.getSession(false);
             if (session != null) {
                 synchronized (session) {
-                    long afterModifiedTime = req.getSession().getModifiedTime();
-                    if (beforeModifiedTime != afterModifiedTime) {
+                    if (req.getSession().isModified()) {
                         sessionStoreService.storeSession(req);
                     }
                 }

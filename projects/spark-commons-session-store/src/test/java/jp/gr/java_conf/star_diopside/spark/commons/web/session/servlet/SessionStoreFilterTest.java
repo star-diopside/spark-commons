@@ -12,6 +12,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSessionEvent;
 
 import jp.gr.java_conf.star_diopside.spark.commons.web.session.service.SessionStoreService;
 
@@ -75,18 +76,20 @@ public class SessionStoreFilterTest {
 
     @Test
     public void testNopExistSession() throws Exception {
-        request.getSession();
+        StoredHttpSession session = new SessionStoreHttpServletRequest(request).getSession();
+        listener.sessionCreated(new HttpSessionEvent(session.getSession()));
         filter.doFilter(request, response, new MockFilterChain(new ConsumerServlet((req, res) -> {
         })));
 
         SessionStoreHttpServletRequest req = buildSessionStoreHttpServletRequest(request);
         verify(service).readSession(req);
-        verify(service, never()).storeSession(req);
+        verify(service).storeSession(req);
     }
 
     @Test
     public void testUpdateExistSession() throws Exception {
-        request.getSession();
+        StoredHttpSession session = new SessionStoreHttpServletRequest(request).getSession();
+        listener.sessionCreated(new HttpSessionEvent(session.getSession()));
         filter.doFilter(request, response, new MockFilterChain(new ConsumerServlet((req, res) -> {
             req.getSession().setAttribute("key", "value");
         })));
@@ -98,7 +101,8 @@ public class SessionStoreFilterTest {
 
     @Test
     public void testInvalidSession() throws Exception {
-        request.getSession();
+        StoredHttpSession session = new SessionStoreHttpServletRequest(request).getSession();
+        listener.sessionCreated(new HttpSessionEvent(session.getSession()));
         filter.doFilter(request, response, new MockFilterChain(new ConsumerServlet((req, res) -> {
             req.getSession().invalidate();
         })));
