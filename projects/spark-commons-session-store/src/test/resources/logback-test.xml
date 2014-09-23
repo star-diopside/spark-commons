@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+<configuration>
+
+    <!-- Error Log Appender -->
+    <appender name="errorLog" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern><![CDATA[%date{yyyy-MM-dd HH:mm:ss.SSS},%level,%thread,%logger,%message%n]]></pattern>
+        </encoder>
+        <target>System.err</target>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+    </appender>
+
+    <!-- Trace Log Appender -->
+    <appender name="traceLog" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern><![CDATA[%date{yyyy-MM-dd HH:mm:ss.SSS},%level,%thread,%logger,%message%n]]></pattern>
+        </encoder>
+    </appender>
+
+    <!-- Logger Setting -->
+    <logger name="jp.gr.java_conf.star_diopside.spark.commons" level="TRACE">
+        <appender-ref ref="traceLog" />
+    </logger>
+
+    <!-- Root Logger Setting -->
+    <root level="ERROR">
+        <appender-ref ref="errorLog" />
+    </root>
+
+</configuration>
