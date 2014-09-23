@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+
+    <import resource="classpath:/META-INF/spring/spark-commons/web/session-store-context.xml" />
+    <import resource="classpath:/META-INF/spring/spark-commons/web/jdbc-session-store-context.xml" />
+
+    <jdbc:embedded-database id="jdbcSessionStoreDataSource" type="H2">
+        <jdbc:script execution="INIT" location="classpath:/jp/gr/java_conf/star_diopside/spark/commons/web/session/create-schema-h2.sql" />
+        <jdbc:script execution="DESTROY" location="classpath:/jp/gr/java_conf/star_diopside/spark/commons/web/session/drop-schema.sql" />
+    </jdbc:embedded-database>
+
+    <bean id="jdbcSessionStoreTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="jdbcSessionStoreDataSource" />
+    </bean>
+
+</beans>

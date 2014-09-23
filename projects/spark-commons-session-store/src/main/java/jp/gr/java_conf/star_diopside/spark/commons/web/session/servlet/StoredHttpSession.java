@@ -24,6 +24,9 @@ public class StoredHttpSession extends HttpSessionWrapper {
     /** 永続化時のセッション属性変更時刻タイムスタンプ */
     private long serializedModifiedTime;
 
+    /** 永続化時の状態から変更されたかどうかを示すフラグ */
+    private boolean modified;
+
     /**
      * コンストラクタ
      * 
@@ -32,6 +35,7 @@ public class StoredHttpSession extends HttpSessionWrapper {
     public StoredHttpSession(HttpSession session) {
         super(session);
         modifiedTime = System.currentTimeMillis();
+        modified = true;
     }
 
     /**
@@ -52,11 +56,21 @@ public class StoredHttpSession extends HttpSessionWrapper {
         return serializedModifiedTime;
     }
 
+    /**
+     * 永続化時の状態から変更されたかどうかを示すフラグを取得する。
+     * 
+     * @return シリアライズまたはデシリアライズした後に変更が加えられた場合はtrue、変更されていない場合はfalse
+     */
+    public boolean isModified() {
+        return modified;
+    }
+
     @Override
     public Object getAttribute(String name) {
         Object attribute = super.getAttribute(name);
         if (isMutable(attribute)) {
             modifiedTime = System.currentTimeMillis();
+            modified = true;
         }
         return attribute;
     }
@@ -65,12 +79,14 @@ public class StoredHttpSession extends HttpSessionWrapper {
     public void setAttribute(String name, Object value) {
         super.setAttribute(name, value);
         modifiedTime = System.currentTimeMillis();
+        modified = true;
     }
 
     @Override
     public void removeAttribute(String name) {
         super.removeAttribute(name);
         modifiedTime = System.currentTimeMillis();
+        modified = true;
     }
 
     /**
@@ -107,6 +123,9 @@ public class StoredHttpSession extends HttpSessionWrapper {
 
         // 永続化時のセッション属性変更時刻タイムスタンプを更新する。
         serializedModifiedTime = modifiedTime;
+
+        // 変更フラグをリセットする
+        modified = false;
 
         return data;
     }
@@ -148,6 +167,9 @@ public class StoredHttpSession extends HttpSessionWrapper {
 
         // 永続化時のセッション属性変更時刻タイムスタンプを更新する。
         serializedModifiedTime = timestamp;
+
+        // 変更フラグをリセットする
+        modified = false;
     }
 
     private boolean isMutable(Object obj) {
