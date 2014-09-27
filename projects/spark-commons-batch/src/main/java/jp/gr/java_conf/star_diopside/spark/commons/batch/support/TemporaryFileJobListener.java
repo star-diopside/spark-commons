@@ -1,11 +1,11 @@
 package jp.gr.java_conf.star_diopside.spark.commons.batch.support;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import jp.gr.java_conf.star_diopside.spark.commons.core.exception.IORuntimeException;
 import lombok.Setter;
 
 import org.apache.commons.io.FileUtils;
@@ -53,7 +53,7 @@ public class TemporaryFileJobListener implements JobExecutionListener, Initializ
             Path tempDir = Paths.get(directory == null ? FileUtils.getTempDirectoryPath() : directory);
             tempFile = Files.createTempFile(tempDir, prefix, suffix);
         } catch (IOException e) {
-            throw new IORuntimeException(e);
+            throw new UncheckedIOException(e);
         }
         jobExecution.getExecutionContext().putString(key, tempFile.toString());
     }
@@ -67,7 +67,7 @@ public class TemporaryFileJobListener implements JobExecutionListener, Initializ
         try {
             Files.delete(tempFile);
         } catch (IOException e) {
-            throw new IORuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 }
