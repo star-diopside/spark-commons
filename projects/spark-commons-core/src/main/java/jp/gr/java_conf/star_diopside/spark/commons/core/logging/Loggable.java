@@ -2,7 +2,6 @@ package jp.gr.java_conf.star_diopside.spark.commons.core.logging;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import jp.gr.java_conf.star_diopside.spark.commons.core.exception.ReflectiveOperationRuntimeException;
@@ -13,12 +12,12 @@ import jp.gr.java_conf.star_diopside.spark.commons.core.exception.ReflectiveOper
 public interface Loggable {
 
     /**
-     * ログ出力用文字列のストリームを生成する。
+     * ログ出力パラメータのストリームを生成する。
      * 
-     * @return ログ出力用文字列のストリーム
+     * @return ログ出力パラメータのストリーム
      */
-    default Stream<Map.Entry<String, String>> streamLoggingObjects() {
-        Stream.Builder<Map.Entry<String, String>> builder = Stream.builder();
+    default Stream<LoggingParameter> streamLoggingObjects() {
+        Stream.Builder<LoggingParameter> builder = Stream.builder();
         Class<?> clazz = getClass();
 
         try {

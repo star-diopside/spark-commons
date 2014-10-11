@@ -18,13 +18,13 @@ public final class LoggableSupport {
     }
 
     /**
-     * オブジェクトをログ出力用文字列に編集し、ログストリームに追加する。
+     * オブジェクトをログパラメータに編集し、ログストリームに追加する。
      * 
-     * @param builder ログ出力用文字列を設定するストリームビルダー
+     * @param builder ログパラメータを設定するストリームビルダー
      * @param itemName ログ出力項目名称
      * @param item ログ出力項目
      */
-    public static void addLog(Stream.Builder<Map.Entry<String, String>> builder, String itemName, Object item) {
+    public static void addLog(Stream.Builder<LoggingParameter> builder, String itemName, Object item) {
         if (item instanceof Loggable) {
             addLoggableToLog(builder, itemName, (Loggable) item);
         } else if (item instanceof Collection) {
@@ -32,32 +32,29 @@ public final class LoggableSupport {
         } else if (item != null && item.getClass().isArray()) {
             addArrayToLog(builder, itemName, item);
         } else {
-            builder.add(Pair.of(itemName, String.valueOf(item)));
+            builder.add(new KeyValueLoggingParameter(itemName, String.valueOf(item)));
         }
     }
 
     /**
-     * {@link Loggable}をログ出力用文字列に編集し、ログストリームに追加する。
+     * {@link Loggable}をログパラメータに編集し、ログストリームに追加する。
      * 
-     * @param builder ログ出力用文字列を設定するストリームビルダー
+     * @param builder ログパラメータを設定するストリームビルダー
      * @param itemName ログ出力項目名称
      * @param item ログ出力項目
      */
-    private static void addLoggableToLog(Stream.Builder<Map.Entry<String, String>> builder, String itemName,
-            Loggable item) {
-        item.streamLoggingObjects()
-                .forEach(entry -> addLog(builder, itemName + "." + entry.getKey(), entry.getValue()));
+    private static void addLoggableToLog(Stream.Builder<LoggingParameter> builder, String itemName, Loggable item) {
+        item.streamLoggingObjects().forEach(param -> builder.add(param.createNestedLoggingParameter(itemName)));
     }
 
     /**
-     * リスト項目をログ出力用文字列に編集し、ログストリームに追加する。
+     * リスト項目をログパラメータに編集し、ログストリームに追加する。
      * 
-     * @param builder ログ出力用文字列を設定するストリームビルダー
+     * @param builder ログパラメータを設定するストリームビルダー
      * @param itemName ログ出力リスト項目名称
      * @param itemList ログ出力リスト項目
      */
-    private static void addListToLog(Stream.Builder<Map.Entry<String, String>> builder, String itemName,
-            Collection<?> itemList) {
+    private static void addListToLog(Stream.Builder<LoggingParameter> builder, String itemName, Collection<?> itemList) {
         int count = 0;
         for (Object item : itemList) {
             addLog(builder, itemName + "[" + (count++) + "]", item);
@@ -65,14 +62,13 @@ public final class LoggableSupport {
     }
 
     /**
-     * 配列項目をログ出力用文字列に編集し、ログストリームに追加する。
+     * 配列項目をログパラメータに編集し、ログストリームに追加する。
      * 
-     * @param builder ログ出力用文字列を設定するストリームビルダー
+     * @param builder ログパラメータを設定するストリームビルダー
      * @param itemName ログ出力配列項目名称
      * @param itemList ログ出力配列項目
      */
-    private static void addArrayToLog(Stream.Builder<Map.Entry<String, String>> builder, String itemName,
-            Object itemList) {
+    private static void addArrayToLog(Stream.Builder<LoggingParameter> builder, String itemName, Object itemList) {
         int length = Array.getLength(itemList);
         for (int i = 0; i < length; i++) {
             addLog(builder, itemName + "[" + i + "]", Array.get(itemList, i));
@@ -80,11 +76,11 @@ public final class LoggableSupport {
     }
 
     /**
-     * ログ出力パラメータ値を取得する。
+     * ログ出力フィールド情報を取得する。
      * 
-     * @param field ログ出力パラメータ情報
+     * @param field ログ出力フィールド
      * @param obj ログ出力オブジェクト
-     * @return ログ出力パラメータのキー名と値を格納する{@link Map.Entry} (ログ出力を行わない場合はEMPTYを返す。)
+     * @return ログ出力フィールドのキー名と値を格納する{@link Map.Entry} (ログ出力を行わない場合はEMPTYを返す。)
      * @throws IllegalAccessException ログ出力フィールドにアクセスできない場合
      */
     public static Optional<Map.Entry<String, Object>> getLoggingObject(Field field, Object obj)
