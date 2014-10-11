@@ -24,10 +24,11 @@ public interface Loggable {
         try {
             do {
                 Field[] fields = clazz.getDeclaredFields();
+                String className = clazz.getSimpleName();
                 AccessibleObject.setAccessible(fields, true);
                 for (Field field : fields) {
                     LoggableSupport.getLoggingObject(field, this).ifPresent(
-                            entry -> LoggableSupport.addLog(builder, entry.getKey(), entry.getValue()));
+                            entry -> LoggableSupport.addLog(builder, className + "." + entry.getKey(), entry.getValue()));
                 }
             } while ((clazz = clazz.getSuperclass()) != null);
         } catch (IllegalAccessException e) {
