@@ -27,7 +27,7 @@ public final class LoggableSupport {
     public static void addLog(Stream.Builder<LoggingParameter> builder, String itemName, Object item) {
         if (item instanceof Loggable) {
             addLoggableToLog(builder, itemName, (Loggable) item);
-        } else if (item instanceof Collection) {
+        } else if (item instanceof Collection<?>) {
             addListToLog(builder, itemName, (Collection<?>) item);
         } else if (item != null && item.getClass().isArray()) {
             addArrayToLog(builder, itemName, item);

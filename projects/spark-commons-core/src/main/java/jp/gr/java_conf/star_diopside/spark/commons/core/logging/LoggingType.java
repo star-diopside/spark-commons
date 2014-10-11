@@ -13,12 +13,12 @@ import org.apache.commons.lang3.tuple.Pair;
  * 
  * @see Loggable
  * @see LoggableSupport
- * @see LogSetting
+ * @see LoggingSetting
  */
 public enum LoggingType {
 
     /**
-     * ログ出力パラメータに含める
+     * ログ出力パラメータに含める。
      */
     INCLUDE {
         @Override
