@@ -1,18 +1,21 @@
 package jp.gr.java_conf.star_diopside.spark.commons.core.logging;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * ログ出力情報編集用ユーティリティクラス
  */
-public final class LoggableUtils {
+public final class LoggableSupport {
 
-    private LoggableUtils() {
+    private LoggableSupport() {
     }
 
     /**
@@ -74,6 +77,37 @@ public final class LoggableUtils {
         int length = Array.getLength(itemList);
         for (int i = 0; i < length; i++) {
             addLog(builder, itemName + "[" + i + "]", Array.get(itemList, i));
+        }
+    }
+
+    /**
+     * ログ出力パラメータ値を取得する。
+     * 
+     * @param field ログ出力パラメータ情報
+     * @param obj ログ出力オブジェクト
+     * @return ログ出力パラメータのキー名と値を格納する{@link Map.Entry} (ログ出力を行わない場合はEMPTYを返す。)
+     * @throws IllegalAccessException
+     */
+    public static Optional<Map.Entry<String, Object>> getLoggingObject(Field field, Object obj)
+            throws IllegalAccessException {
+
+        LogSetting setting = field.getDeclaredAnnotation(LogSetting.class);
+
+        if (setting == null) {
+            return Optional.of(Pair.of(field.getName(), field.get(obj)));
+        } else if (setting.value() == LoggingType.EXCLUDE) {
+            return Optional.empty();
+        }
+
+        String key = (StringUtils.isEmpty(setting.key()) ? field.getName() : setting.key());
+
+        switch (setting.value()) {
+        case INCLUDE:
+            return Optional.of(Pair.of(key, field.get(obj)));
+        case PROTECT:
+            return Optional.of(Pair.of(key, setting.protectValue()));
+        default:
+            throw new IllegalArgumentException();
         }
     }
 }
