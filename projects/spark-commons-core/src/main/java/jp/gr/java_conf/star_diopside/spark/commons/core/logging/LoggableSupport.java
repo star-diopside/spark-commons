@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -86,28 +85,15 @@ public final class LoggableSupport {
      * @param field ログ出力パラメータ情報
      * @param obj ログ出力オブジェクト
      * @return ログ出力パラメータのキー名と値を格納する{@link Map.Entry} (ログ出力を行わない場合はEMPTYを返す。)
-     * @throws IllegalAccessException
+     * @throws IllegalAccessException ログ出力フィールドにアクセスできない場合
      */
     public static Optional<Map.Entry<String, Object>> getLoggingObject(Field field, Object obj)
             throws IllegalAccessException {
-
         LogSetting setting = field.getDeclaredAnnotation(LogSetting.class);
-
         if (setting == null) {
             return Optional.of(Pair.of(field.getName(), field.get(obj)));
-        } else if (setting.value() == LoggingType.EXCLUDE) {
-            return Optional.empty();
-        }
-
-        String key = (StringUtils.isEmpty(setting.key()) ? field.getName() : setting.key());
-
-        switch (setting.value()) {
-        case INCLUDE:
-            return Optional.of(Pair.of(key, field.get(obj)));
-        case PROTECT:
-            return Optional.of(Pair.of(key, setting.protectValue()));
-        default:
-            throw new IllegalArgumentException();
+        } else {
+            return setting.value().getLoggingObject(setting, field, obj);
         }
     }
 }
