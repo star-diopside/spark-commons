@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface LogSetting {
+public @interface LoggingSetting {
 
     /**
      * ログ出力タイプを指定する。<br>

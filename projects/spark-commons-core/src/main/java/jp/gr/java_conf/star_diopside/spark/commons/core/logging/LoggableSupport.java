@@ -85,7 +85,7 @@ public final class LoggableSupport {
      */
     public static Optional<Map.Entry<String, Object>> getLoggingObject(Field field, Object obj)
             throws IllegalAccessException {
-        LogSetting setting = field.getDeclaredAnnotation(LogSetting.class);
+        LoggingSetting setting = field.getDeclaredAnnotation(LoggingSetting.class);
         if (setting == null) {
             return Optional.of(Pair.of(field.getName(), field.get(obj)));
         } else {

@@ -22,7 +22,7 @@ public enum LoggingType {
      */
     INCLUDE {
         @Override
-        Optional<Entry<String, Object>> getLoggingObject(LogSetting setting, Field field, Object obj)
+        Optional<Entry<String, Object>> getLoggingObject(LoggingSetting setting, Field field, Object obj)
                 throws IllegalAccessException {
             return Optional.of(Pair.of(getKey(setting, field), field.get(obj)));
         }
@@ -33,7 +33,7 @@ public enum LoggingType {
      */
     EXCLUDE {
         @Override
-        Optional<Entry<String, Object>> getLoggingObject(LogSetting setting, Field field, Object obj)
+        Optional<Entry<String, Object>> getLoggingObject(LoggingSetting setting, Field field, Object obj)
                 throws IllegalAccessException {
             return Optional.empty();
         }
@@ -44,7 +44,7 @@ public enum LoggingType {
      */
     PROTECT {
         @Override
-        Optional<Entry<String, Object>> getLoggingObject(LogSetting setting, Field field, Object obj)
+        Optional<Entry<String, Object>> getLoggingObject(LoggingSetting setting, Field field, Object obj)
                 throws IllegalAccessException {
             return Optional.of(Pair.of(getKey(setting, field), setting.protectValue()));
         }
@@ -59,7 +59,7 @@ public enum LoggingType {
      * @return ログ出力パラメータのキー名と値を格納する{@link Map.Entry} (ログ出力を行わない場合はEMPTYを返す。)
      * @throws IllegalAccessException ログ出力フィールドにアクセスできない場合
      */
-    abstract Optional<Map.Entry<String, Object>> getLoggingObject(LogSetting setting, Field field, Object obj)
+    abstract Optional<Map.Entry<String, Object>> getLoggingObject(LoggingSetting setting, Field field, Object obj)
             throws IllegalAccessException;
 
     /**
@@ -69,7 +69,7 @@ public enum LoggingType {
      * @param field ログ出力パラメータ情報
      * @return ログ出力キー名
      */
-    protected String getKey(LogSetting setting, Field field) {
+    protected String getKey(LoggingSetting setting, Field field) {
         return StringUtils.isEmpty(setting.key()) ? field.getName() : setting.key();
     }
 }
