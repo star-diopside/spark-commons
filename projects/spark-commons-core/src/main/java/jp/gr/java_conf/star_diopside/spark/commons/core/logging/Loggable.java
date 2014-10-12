@@ -22,8 +22,8 @@ public interface Loggable {
 
         try {
             do {
-                Field[] fields = clazz.getDeclaredFields();
                 String className = clazz.getSimpleName();
+                Field[] fields = clazz.getDeclaredFields();
                 AccessibleObject.setAccessible(fields, true);
                 for (Field field : fields) {
                     LoggableSupport.getLoggingObject(field, this).ifPresent(

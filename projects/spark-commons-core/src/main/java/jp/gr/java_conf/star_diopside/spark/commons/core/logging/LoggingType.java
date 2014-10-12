@@ -2,7 +2,6 @@ package jp.gr.java_conf.star_diopside.spark.commons.core.logging;
 
 import java.lang.reflect.Field;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
@@ -22,7 +21,7 @@ public enum LoggingType {
      */
     INCLUDE {
         @Override
-        Optional<Entry<String, Object>> getLoggingObject(LoggingSetting setting, Field field, Object obj)
+        Optional<Map.Entry<String, Object>> getLoggingObject(LoggingSetting setting, Field field, Object obj)
                 throws IllegalAccessException {
             return Optional.of(Pair.of(getKey(setting, field), field.get(obj)));
         }
@@ -33,7 +32,7 @@ public enum LoggingType {
      */
     EXCLUDE {
         @Override
-        Optional<Entry<String, Object>> getLoggingObject(LoggingSetting setting, Field field, Object obj)
+        Optional<Map.Entry<String, Object>> getLoggingObject(LoggingSetting setting, Field field, Object obj)
                 throws IllegalAccessException {
             return Optional.empty();
         }
@@ -44,9 +43,30 @@ public enum LoggingType {
      */
     PROTECT {
         @Override
-        Optional<Entry<String, Object>> getLoggingObject(LoggingSetting setting, Field field, Object obj)
+        Optional<Map.Entry<String, Object>> getLoggingObject(LoggingSetting setting, Field field, Object obj)
                 throws IllegalAccessException {
             return Optional.of(Pair.of(getKey(setting, field), setting.protectValue()));
+        }
+    },
+
+    /**
+     * ログ出力パラメータに含めるが、値が設定されている場合はその値を表示しない。
+     */
+    PROTECT_IF_PRESENT {
+        @Override
+        Optional<Map.Entry<String, Object>> getLoggingObject(LoggingSetting setting, Field field, Object obj)
+                throws IllegalAccessException {
+            return Optional.of(Pair.of(getKey(setting, field), isPresent(obj) ? setting.protectValue() : obj));
+        }
+
+        private boolean isPresent(Object obj) {
+            if (obj == null) {
+                return false;
+            } else if (obj instanceof String) {
+                return ((String) obj).length() > 0;
+            } else {
+                return true;
+            }
         }
     };
 
