@@ -9,10 +9,6 @@ import javax.annotation.Resource;
 import javax.servlet.ServletContextEvent;
 import javax.sql.DataSource;
 
-import jp.gr.java_conf.star_diopside.spark.commons.web.session.servlet.SessionStoreHttpServletRequest;
-import jp.gr.java_conf.star_diopside.spark.commons.web.session.servlet.SessionStoreListener;
-import jp.gr.java_conf.star_diopside.spark.commons.web.session.servlet.StoredHttpSession;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.iterators.EnumerationIterator;
 import org.dbunit.database.DatabaseConnection;
@@ -25,17 +21,21 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockServletContext;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
+
+import jp.gr.java_conf.star_diopside.spark.commons.web.session.servlet.SessionStoreHttpServletRequest;
+import jp.gr.java_conf.star_diopside.spark.commons.web.session.servlet.SessionStoreListener;
+import jp.gr.java_conf.star_diopside.spark.commons.web.session.servlet.StoredHttpSession;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(locations = "classpath:test-context.xml")
-@TransactionConfiguration
 @Transactional
+@Rollback
 public class JdbcSessionStoreTest {
 
     @Resource(name = "jdbcSessionStoreDataSource")
