@@ -5,12 +5,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Spliterators;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.lang3.SerializationException;
 
 /**
@@ -99,12 +102,9 @@ public class StoredHttpSession extends HttpSessionWrapper {
         HttpSession session = getSession();
 
         // セッション属性情報を列挙する。
-        HashMap<String, Object> attributes = new HashMap<>();
-
-        for (Enumeration<String> e = session.getAttributeNames(); e.hasMoreElements();) {
-            String key = e.nextElement();
-            attributes.put(key, session.getAttribute(key));
-        }
+        Map<String, Object> attributes = StreamSupport
+                .stream(Spliterators.spliteratorUnknownSize(IteratorUtils.asIterator(session.getAttributeNames()), 0), false)
+                .collect(Collectors.toMap(Function.identity(), session::getAttribute));
 
         // セッション情報をシリアライズする。
         byte[] data;
@@ -155,13 +155,10 @@ public class StoredHttpSession extends HttpSessionWrapper {
         }
 
         // セッション情報を全削除する。
-        for (Enumeration<String> e = session.getAttributeNames(); e.hasMoreElements();) {
-            String key = e.nextElement();
-            session.removeAttribute(key);
-        }
+        IteratorUtils.asIterator(session.getAttributeNames()).forEachRemaining(session::removeAttribute);
 
         // デシリアライズしたセッション情報を設定する。
-        attributes.entrySet().stream().forEach(e -> session.setAttribute(e.getKey(), e.getValue()));
+        attributes.forEach(session::setAttribute);
         session.setMaxInactiveInterval(interval);
         modifiedTime = timestamp;
 

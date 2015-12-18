@@ -10,7 +10,7 @@ import javax.servlet.ServletContextEvent;
 import javax.sql.DataSource;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.iterators.EnumerationIterator;
+import org.apache.commons.collections4.IteratorUtils;
 import org.dbunit.database.DatabaseConnection;
 import org.junit.After;
 import org.junit.Before;
@@ -94,7 +94,7 @@ public class JdbcSessionStoreTest {
         session.setAttribute("intKey", 1);
         service.storeSession(req);
 
-        new EnumerationIterator<>(session.getAttributeNames()).forEachRemaining(session::removeAttribute);
+        IteratorUtils.asIterator(session.getAttributeNames()).forEachRemaining(session::removeAttribute);
         assertThat(CollectionUtils.size(session.getAttributeNames()), is(0));
 
         MockHttpServletRequest newRequest = new MockHttpServletRequest(servletContext);
