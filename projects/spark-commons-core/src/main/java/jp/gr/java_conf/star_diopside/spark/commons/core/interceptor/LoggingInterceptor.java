@@ -501,24 +501,24 @@ public class LoggingInterceptor extends AbstractTraceInterceptor {
     private static String replacePlaceholders(String message, Map<String, Supplier<?>> base,
             Map<String, Supplier<?>> addition) {
 
-        StringBuffer output = new StringBuffer();
-
         if (base == null && addition == null) {
-            output.append(message);
-        } else {
-            Matcher matcher = PATTERN_PLACEHOLDER.matcher(message);
-            while (matcher.find()) {
-                String match = matcher.group();
-                if (base != null && base.containsKey(match)) {
-                    matcher.appendReplacement(output, Matcher.quoteReplacement(String.valueOf(base.get(match).get())));
-                } else if (addition != null && addition.containsKey(match)) {
-                    matcher.appendReplacement(output, Matcher.quoteReplacement(String.valueOf(addition.get(match).get())));
-                } else {
-                    matcher.appendReplacement(output, Matcher.quoteReplacement(match));
-                }
-            }
-            matcher.appendTail(output);
+            return message;
         }
+
+        StringBuffer output = new StringBuffer();
+        Matcher matcher = PATTERN_PLACEHOLDER.matcher(message);
+
+        while (matcher.find()) {
+            String match = matcher.group();
+            if (base != null && base.containsKey(match)) {
+                matcher.appendReplacement(output, Matcher.quoteReplacement(String.valueOf(base.get(match).get())));
+            } else if (addition != null && addition.containsKey(match)) {
+                matcher.appendReplacement(output, Matcher.quoteReplacement(String.valueOf(addition.get(match).get())));
+            } else {
+                matcher.appendReplacement(output, Matcher.quoteReplacement(match));
+            }
+        }
+        matcher.appendTail(output);
 
         return output.toString();
     }
