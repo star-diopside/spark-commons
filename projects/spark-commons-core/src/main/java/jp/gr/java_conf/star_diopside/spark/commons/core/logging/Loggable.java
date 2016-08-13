@@ -4,7 +4,7 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.util.stream.Stream;
 
-import jp.gr.java_conf.star_diopside.spark.commons.core.exception.ReflectiveOperationRuntimeException;
+import jp.gr.java_conf.star_diopside.spark.commons.core.exception.UncheckedReflectiveOperationException;
 
 /**
  * ログ出力情報取得機能を持つクラスが実装するインタフェース
@@ -31,7 +31,7 @@ public interface Loggable {
                 }
             } while ((clazz = clazz.getSuperclass()) != null);
         } catch (IllegalAccessException e) {
-            throw new ReflectiveOperationRuntimeException(e);
+            throw new UncheckedReflectiveOperationException(e);
         }
 
         return builder.build();

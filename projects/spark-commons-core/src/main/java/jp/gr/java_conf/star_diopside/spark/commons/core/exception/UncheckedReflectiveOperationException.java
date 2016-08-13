@@ -6,7 +6,7 @@ import java.util.Objects;
  * {@link ReflectiveOperationException}をラップする非検査例外クラス
  */
 @SuppressWarnings("serial")
-public class ReflectiveOperationRuntimeException extends RuntimeException {
+public class UncheckedReflectiveOperationException extends RuntimeException {
 
     /**
      * コンストラクタ
@@ -14,7 +14,7 @@ public class ReflectiveOperationRuntimeException extends RuntimeException {
      * @param message 例外メッセージ
      * @param cause {@link ReflectiveOperationException}
      */
-    public ReflectiveOperationRuntimeException(String message, ReflectiveOperationException cause) {
+    public UncheckedReflectiveOperationException(String message, ReflectiveOperationException cause) {
         super(message, Objects.requireNonNull(cause));
     }
 
@@ -23,7 +23,7 @@ public class ReflectiveOperationRuntimeException extends RuntimeException {
      * 
      * @param cause {@link ReflectiveOperationException}
      */
-    public ReflectiveOperationRuntimeException(ReflectiveOperationException cause) {
+    public UncheckedReflectiveOperationException(ReflectiveOperationException cause) {
         super(Objects.requireNonNull(cause));
     }
 
