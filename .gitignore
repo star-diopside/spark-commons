@@ -2,4 +2,6 @@
 .project
 .springBeans
 .settings/
-target/
+.gradle/
+bin/
+build/

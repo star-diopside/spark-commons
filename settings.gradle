@@ -1,0 +1,8 @@
+rootProject.name = "spark-commons"
+
+include ":spark-commons-core"
+include ":spark-commons-batch"
+include ":spark-commons-data"
+include ":spark-commons-web"
+include ":spark-commons-session-store"
+include ":spark-commons-test"
